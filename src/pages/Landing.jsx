@@ -25,12 +25,12 @@ const pricing = [
   { name: "Team", price: "$29", period: "per month", desc: "For teams and organizations", features: ["Everything in Pro", "Team dashboards", "Shared workspaces", "Admin controls", "Priority support", "Custom integrations"], cta: "Contact Sales", highlight: false },
 ];
 
-const stats = [
-  { value: "2.4M+", label: "Active Users" },
-  { value: "98%", label: "Satisfaction Rate" },
-  { value: "40%", label: "Productivity Boost" },
-  { value: "150+", label: "Countries" },
-];
+// const stats = [
+//   { value: "2.4M+", label: "Active Users" },
+//   { value: "98%", label: "Satisfaction Rate" },
+//   { value: "40%", label: "Productivity Boost" },
+//   { value: "150+", label: "Countries" },
+// ];
 
 function Navbar() {
   const [scrolled, setScrolled] = useState(false);
@@ -180,15 +180,6 @@ export default function Landing() {
                   Try Demo <ChevronRight className="w-4 h-4" />
                 </motion.button>
               </Link>
-            </motion.div>
-            <motion.div initial={{ opacity: 0, y: 30 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.7, delay: 0.85 }}
-              className="grid grid-cols-2 md:grid-cols-4 gap-6 mt-20 max-w-3xl mx-auto">
-              {stats.map(({ value, label }) => (
-                <div key={label} className="text-center">
-                  <div className="text-3xl font-black gradient-text">{value}</div>
-                  <div className="text-sm mt-1" style={{ color: "rgba(255,255,255,0.4)" }}>{label}</div>
-                </div>
-              ))}
             </motion.div>
           </div>
           <motion.div initial={{ opacity: 0, y: 60, scale: 0.95 }} animate={{ opacity: 1, y: 0, scale: 1 }}

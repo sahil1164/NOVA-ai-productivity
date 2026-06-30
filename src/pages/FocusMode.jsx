@@ -1,12 +1,16 @@
 import { useState, useEffect, useCallback, useRef, useContext } from "react";
+import { collection, getDocs, query, orderBy } from "firebase/firestore";
+import { db } from "../firebase";
 import { FocusContext } from "../FocusContext";
+import { logActivity } from "../activityLogger";
+import { AuthContext } from "../AuthContext";
 import { motion, AnimatePresence } from "framer-motion";
 import AppLayout from "../components/AppLayout";
 import { Play, Pause, RotateCcw, SkipForward, Music, Volume2, VolumeX, Zap, CheckCircle2 } from "lucide-react";
 
 const MODES = [
   { label: "Focus", duration: 25 * 60, color: "#7C3AED" },
-  { label: "Short Break", duration: 5 , color: "#38BDF8" },
+  { label: "Short Break", duration: 5 * 60  , color: "#38BDF8" },
   { label: "Long Break", duration: 15 * 60 , color: "#2DD4BF" },
 ];
 
@@ -25,6 +29,37 @@ export default function FocusMode() {
   const [sessionLog, setSessionLog] = useState([]);
   const sessionSavedRef = useRef(false);
   const { focusMinutes, setFocusMinutes } = useContext(FocusContext);
+  const { currentUser } = useContext(AuthContext);
+
+
+  useEffect(() => {
+    const loadSessionLogs = async () => {
+      if (!currentUser) return;
+
+      const q = query(
+        collection(db, "users", currentUser.uid, "activityLog"),
+        orderBy("createdAt", "desc")
+      );
+
+      const snap = await getDocs(q);
+
+      const logs = [];
+
+      snap.forEach((doc) => {
+        const data = doc.data();
+
+        logs.push({
+          label: "Focus Session",
+          duration: data.message.replace("Completed ", ""),
+          done: true,
+        });
+      });
+
+      setSessionLog(logs.slice(0, 5)); // only latest 5
+    };
+
+    loadSessionLogs();
+  }, [currentUser]);
 
   const mode =
     modeIdx === 0
@@ -40,12 +75,20 @@ export default function FocusMode() {
           sessionSavedRef.current = true;
           setRunning(false);
           setSessions(n => n + 1);
-          if (mode.label === "Focus") {
-            setTotalFocusMinutes(
-               (prev) => prev + customFocusMinutes
+          // if (mode.label === "Focus") {
+          //   setFocusMinutes(
+          //     (prev) => prev + customFocusMinutes
+          //   );
+          // }
+          setSessionComplete(true);
+          if (currentUser && mode.label === "Focus") {
+            console.log("TRYING TO SAVE ACTIVITY");
+            logActivity(
+              currentUser.uid,
+              "focus_complete",
+              `Completed ${customFocusMinutes} minute focus session`
             );
           }
-          setSessionComplete(true);
           if (mode.label === "Focus") {
             setModeIdx(1);   // switch to Short Break
           }

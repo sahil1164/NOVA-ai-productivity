@@ -7,12 +7,9 @@ import AppLayout from "../components/AppLayout";
 import ProgressRing from "../components/ProgressRing";
 import PomodoroTimer from "../components/PomodoroTimer";
 import { CheckSquare, AlertCircle, Flame, Clock, TrendingUp, ChevronRight } from "lucide-react";
-import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Cell } from "recharts";
 
-const weekData = [
-  { day: "Mon", hours: 5.2 }, { day: "Tue", hours: 6.8 }, { day: "Wed", hours: 4.1 },
-  { day: "Thu", hours: 7.3 }, { day: "Fri", hours: 6.0 }, { day: "Sat", hours: 3.5 }, { day: "Sun", hours: 6.5 },
-];
+
+
 
 const priorityStyle = {
   High: { background: "rgba(239,68,68,0.15)", color: "#f87171", border: "1px solid rgba(239,68,68,0.25)" },
@@ -194,21 +191,79 @@ export default function Dashboard() {
 
         <motion.div variants={item} className="glass-card rounded-2xl p-5">
           <div className="flex items-center gap-2 mb-5">
-            <TrendingUp className="w-4 h-4 text-blue-400" />
-            <h3 className="text-white font-semibold text-sm">Weekly Focus Hours</h3>
-            <span className="ml-auto text-xs" style={{ color: "rgba(255,255,255,0.3)" }}>This week</span>
+            <TrendingUp className="w-4 h-4 text-purple-400" />
+            <h3 className="text-white font-semibold text-sm">NOVA Intelligence</h3>
+            <span
+              className="ml-auto text-xs"
+              style={{ color: "rgba(255,255,255,0.3)" }}
+            >
+              Behavioral Analysis
+            </span>
           </div>
-          <ResponsiveContainer width="100%" height={180}>
-            <BarChart data={weekData} barSize={28}>
-              <CartesianGrid strokeDasharray="3 3" stroke="rgba(255,255,255,0.05)" />
-              <XAxis dataKey="day" tick={{ fill: "rgba(255,255,255,0.4)", fontSize: 12 }} axisLine={false} tickLine={false} />
-              <YAxis tick={{ fill: "rgba(255,255,255,0.3)", fontSize: 11 }} axisLine={false} tickLine={false} />
-              <Tooltip contentStyle={{ background: "#1a1f35", border: "1px solid rgba(255,255,255,0.1)", borderRadius: "12px", color: "white", fontSize: "12px" }} cursor={{ fill: "rgba(255,255,255,0.03)" }} />
-              <Bar dataKey="hours" radius={[6, 6, 0, 0]}>
-                {weekData.map((_, i) => <Cell key={i} fill={i === 6 ? "#7C3AED" : "rgba(124,58,237,0.4)"} />)}
-              </Bar>
-            </BarChart>
-          </ResponsiveContainer>
+
+          <div className="space-y-3">
+
+            <div
+              className="p-4 rounded-xl"
+              style={{
+                background: "rgba(239,68,68,0.08)",
+                border: "1px solid rgba(239,68,68,0.15)"
+              }}
+            >
+              <p className="text-sm text-red-400 font-medium">
+                ⚠ Procrastination Detected
+              </p>
+              <p
+                className="text-xs mt-1"
+                style={{ color: "rgba(255,255,255,0.5)" }}
+              >
+                {tasks["To Do"].length > 5
+                  ? "Pending workload increasing. High-priority tasks untouched."
+                  : "Task completion rate looks healthy."}
+              </p>
+            </div>
+
+            <div
+              className="p-4 rounded-xl"
+              style={{
+                background: "rgba(74,222,128,0.08)",
+                border: "1px solid rgba(74,222,128,0.15)"
+              }}
+            >
+              <p className="text-sm text-green-400 font-medium">
+                🔥 Productivity Trend
+              </p>
+              <p
+                className="text-xs mt-1"
+                style={{ color: "rgba(255,255,255,0.5)" }}
+              >
+                {completedTasks >= 3
+                  ? "Strong completion momentum detected today."
+                  : "Low completion activity. Productivity dip observed."}
+              </p>
+            </div>
+
+            <div
+              className="p-4 rounded-xl"
+              style={{
+                background: "rgba(56,189,248,0.08)",
+                border: "1px solid rgba(56,189,248,0.15)"
+              }}
+            >
+              <p className="text-sm text-blue-400 font-medium">
+                🎯 Context Aware Suggestion
+              </p>
+              <p
+                className="text-xs mt-1"
+                style={{ color: "rgba(255,255,255,0.5)" }}
+              >
+                {focusMinutes < 30
+                  ? "Low focus time today. Recommend entering Focus Mode."
+                  : "Focus pattern stable. Maintain deep work sessions."}
+              </p>
+            </div>
+
+          </div>
         </motion.div>
       </motion.div>
     </AppLayout>

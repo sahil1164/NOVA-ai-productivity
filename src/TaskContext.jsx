@@ -1,5 +1,6 @@
 import { createContext, useState, useEffect, useContext } from "react";
 import { doc, getDoc, setDoc } from "firebase/firestore";
+import { logActivity } from "./activityLogger";
 import { db } from "./firebase";
 import { AuthContext } from "./AuthContext";
 
@@ -80,8 +81,18 @@ export function TaskProvider({ children }) {
     }));
   };
 
+  const addTask = async (taskTitle) => {
+    if (!currentUser) return;
+
+    await logActivity(
+      currentUser.uid,
+      "task_create",
+      `Created task: ${taskTitle}`
+    );
+  };
+
   return (
-    <TaskContext.Provider value={{ tasks, setTasks, importGoogleEvents }}>
+    <TaskContext.Provider value={{ tasks, setTasks, importGoogleEvents, addTask }}>
       {!loading && children}
     </TaskContext.Provider>
   );
